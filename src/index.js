@@ -5,15 +5,20 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to database function
 const connectDB = async () => {
-    // Priority: env variable > hardcoded fallback (for quick fixes)
-    const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://ashishy8750_db_user:59GAnr7SlGKbYZ2L@cluster0.ptcp77y.mongodb.net/?appName=Cluster0";
+    // Atlas connection strings work best with retryWrites and w=majority
+    const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://ashishy8750_db_user:59GAnr7SlGKbYZ2L@cluster0.ptcp77y.mongodb.net/HRMS?retryWrites=true&w=majority";
+
+    // Monitor connection events to debug timeouts
+    mongoose.connection.on('connecting', () => console.log('⏳ Connecting to MongoDB...'));
+    mongoose.connection.on('connected', () => console.log('✅ Mongoose Connected'));
+    mongoose.connection.on('error', (err) => console.error('❌ Mongoose Connection Error:', err));
 
     try {
-        const conn = await mongoose.connect(MONGODB_URI);
-        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+        await mongoose.connect(MONGODB_URI, {
+            serverSelectionTimeoutMS: 5000, // Fail fast (5s) instead of 30s
+        });
     } catch (error) {
-        console.error(`❌ Database Connection Error: ${error.message}`);
-        console.log("Tip: If you see ENOTFOUND, ensure your connection string uses 'mongodb+srv://' for Atlas clusters.");
+        console.error(`❌ Initial Database Connection Error: ${error.message}`);
     }
 };
 
