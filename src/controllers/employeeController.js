@@ -32,11 +32,24 @@ exports.addEmployee = async (req, res, next) => {
     }
 };
 
-// @desc    Get all employees
+// @desc    Get all employees (with optional search)
 // @route   GET /api/employees
 exports.getEmployees = async (req, res, next) => {
     try {
-        const employees = await Employee.find().sort({ createdAt: -1 });
+        const { search } = req.query;
+        let query = {};
+
+        if (search) {
+            query = {
+                $or: [
+                    { fullName: { $regex: search, $options: 'i' } },
+                    { employeeId: { $regex: search, $options: 'i' } },
+                    { department: { $regex: search, $options: 'i' } }
+                ]
+            };
+        }
+
+        const employees = await Employee.find(query).sort({ createdAt: -1 });
 
         res.status(200).json({
             success: true,

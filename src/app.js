@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 const errorHandler = require('./middleware/errorHandler');
 
 // Route files
@@ -11,6 +12,11 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 dotenv.config();
 
 const app = express();
+
+// Dev logging middleware
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
 // Body parser
 app.use(express.json());
