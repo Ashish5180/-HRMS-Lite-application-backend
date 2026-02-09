@@ -5,8 +5,12 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to database function
 const connectDB = async () => {
-    // Atlas connection strings work best with retryWrites and w=majority
-    const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://ashishy8750_db_user:59GAnr7SlGKbYZ2L@cluster0.ptcp77y.mongodb.net/HRMS?retryWrites=true&w=majority";
+    const WORKING_URI = "mongodb+srv://ashishy8750_db_user:59GAnr7SlGKbYZ2L@cluster0.ptcp77y.mongodb.net/HRMS?retryWrites=true&w=majority";
+
+    // Force use the working SRV string if the env var looks old or broken
+    const MONGODB_URI = (process.env.MONGODB_URI && process.env.MONGODB_URI.startsWith('mongodb+srv'))
+        ? process.env.MONGODB_URI
+        : WORKING_URI;
 
     // Monitor connection events to debug timeouts
     mongoose.connection.on('connecting', () => console.log('⏳ Connecting to MongoDB...'));
