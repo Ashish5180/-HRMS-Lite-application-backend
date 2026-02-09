@@ -12,8 +12,12 @@ const AttendanceSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Present', 'Absent'],
+        enum: ['Present', 'Absent', 'Half Day', 'Paid Leave', 'Sick Leave', 'Casual Leave', 'Work From Home'],
         required: [true, 'Status is required']
+    },
+    notes: {
+        type: String,
+        default: ''
     }
 }, {
     timestamps: true

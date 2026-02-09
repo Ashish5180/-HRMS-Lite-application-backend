@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const {
     addEmployee,
     getEmployees,
+    updateEmployee,
     deleteEmployee
 } = require('../controllers/employeeController');
 
@@ -17,7 +18,7 @@ const validate = (req, res, next) => {
         });
     }
     // Basic email validation
-    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    const emailRegex = /^\w+([-.]?\w+)*@\w+([-.]?\w+)*(\.\w{2,3})+$/;
     if (!emailRegex.test(email)) {
         return res.status(400).json({
             success: false,
@@ -32,6 +33,7 @@ router.route('/')
     .get(getEmployees);
 
 router.route('/:id')
+    .put(updateEmployee)
     .delete(deleteEmployee);
 
 module.exports = router;

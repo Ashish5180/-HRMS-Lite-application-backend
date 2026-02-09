@@ -13,16 +13,19 @@ dotenv.config();
 
 const app = express();
 
-// Dev logging middleware
+// 1. ABSOLUTE SIMPLEST CORS (Allows everything)
+app.use(cors());
+
+// 2. HEALTH CHECK (No Database needed)
+app.get('/api/ping', (req, res) => res.json({ status: 'server-alive', cors: 'working' }));
+
+// 3. Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Body parser
+// 4. Body parser
 app.use(express.json());
-
-// Enable CORS
-app.use(cors());
 
 // Mount routers
 app.use('/api/employees', employeeRoutes);

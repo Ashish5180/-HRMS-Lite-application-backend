@@ -61,6 +61,34 @@ exports.getEmployees = async (req, res, next) => {
     }
 };
 
+// @desc    Update an employee
+// @route   PUT /api/employees/:id
+exports.updateEmployee = async (req, res, next) => {
+    try {
+        const employee = await Employee.findById(req.params.id);
+
+        if (!employee) {
+            return res.status(404).json({
+                success: false,
+                message: 'Employee not found'
+            });
+        }
+
+        const updatedEmployee = await Employee.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            data: updatedEmployee
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Delete an employee
 // @route   DELETE /api/employees/:id
 exports.deleteEmployee = async (req, res, next) => {
